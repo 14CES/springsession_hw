@@ -60,7 +60,6 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long postId, Long commentId){
         Comment comment = findCommentByIdAndPostId(postId, commentId);
-
-        commentRepository.delete(comment);
+        comment.delete();
     }
 }

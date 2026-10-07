@@ -36,4 +36,9 @@ public class Comment {
     public void update(String content){
         this.content = content;
     }
+
+    public void delete(){
+            this.post.getComments().remove(this);
+            this.post = null;
+    }
 }
