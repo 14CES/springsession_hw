@@ -4,10 +4,10 @@ import com.likelion.springsession.post.dto.PostCreateRequest;
 import com.likelion.springsession.post.dto.PostDetailResponse;
 import com.likelion.springsession.post.dto.PostSummaryResponse;
 import com.likelion.springsession.post.dto.PostUpdateRequest;
-import com.likelion.springsession.post.entity.post;
 import jakarta.validation.Valid;
 import java.util.List;
 import com.likelion.springsession.post.service.PostService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,15 +24,16 @@ public class PostController {
 
     @GetMapping
     public List<PostSummaryResponse> getPosts(){
-        return postService.getPostsummaries();
+        return postService.getPostSummaries();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDetailResponse createdPost(
-            @Valid @RequestBody PostCreateRequest request
-            ){
-        return postService.createPost(request);
+    public PostDetailResponse createPost(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody PostCreateRequest request) {
+
+        return postService.createPost(userId, request);
     }
 
     @GetMapping("/{postId}")
@@ -44,15 +45,19 @@ public class PostController {
 
     @PutMapping("/{postId}")
     public PostDetailResponse updatePost(
+            @AuthenticationPrincipal Long userId,
             @PathVariable("postId") Long postId,
-            @Valid @RequestBody PostUpdateRequest request
-    ){
-        return postService.updatePost(postId, request);
+            @Valid @RequestBody PostUpdateRequest request) {
+
+        return postService.updatePost(userId, postId, request);
     }
 
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePost(@PathVariable("postId") Long postId){
-        postService.deletePost(postId);
+    public void deletePost(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable("postId") Long postId) {
+
+        postService.deletePost(userId, postId);
     }
 }
